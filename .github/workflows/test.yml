@@ -11,39 +11,43 @@ on:
     branches: [ main ]
 
 jobs:
-  build_latex:
+  tex_to_pdf:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v4
+
       - name: Compile test LaTeX document with Maths
-        id: compile-latex-document-with-maths
+        id: math-docs
         uses: ./
         with:
           output_dir: output
           main_latex_file: test/test.tex
           ctan_packages: amsmath amsfonts lua-uni-algos
       - name: Upload PDF to the workflow tab
-        id: upload-workflow-tab-maths
+        id: upload-math-docs
         uses: actions/upload-artifact@v4
         with:
           name: output
           path: output/test.pdf
+
       - name: Compile LaTeX document with fontawesome
-        id: compile-latex-document-with-fontawesome
+        id: fontawesome-docs
         uses: ./
         with:
           output_dir: output
           main_latex_file: test/test-fontawesome.tex
           ctan_packages: moderncv colortbl fontawesome lua-uni-algos
+
       - name: Upload PDF to the workflow tab
-        id: upload-workflow-tab-fontawesome
+        id: upload-fontawesome-docs
         uses: actions/upload-artifact@v4
         with:
           name: output-fontawesome
           path: output/test-fontawesome.pdf
+
       - name: Compile LaTeX document with TOC
-        id: compile-latex-document-with-toc
+        id: toc-docs
         uses: ./
         with:
           output_dir: output
@@ -51,7 +55,7 @@ jobs:
           ctan_packages: lua-uni-algos
           toc: true
       - name: Upload PDF to the workflow tab
-        id: upload-workflow-tab-toc
+        id: upload-toc-docs
         uses: actions/upload-artifact@v4
         with:
           name: output-toc
