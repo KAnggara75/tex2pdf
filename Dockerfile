@@ -13,11 +13,8 @@ RUN curl -sL https://yihui.org/tinytex/install-bin-unix.sh | sh
 
 # set CTAN repo + install ONLY required addons
 RUN /root/.TinyTeX/bin/x86_64-linux/tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet \
-    && /root/.TinyTeX/bin/x86_64-linux/tlmgr update --self --all \
     && /root/.TinyTeX/bin/x86_64-linux/tlmgr install \
-        fontawesome5 \
-        blindtext \
-        lua-uni-algos
+        fontawesome5 blindtext lua-uni-algos xstring fancyhdr
 
 # copy system files
 COPY entrypoint.sh /entrypoint.sh
