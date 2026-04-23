@@ -1,25 +1,29 @@
 #!/bin/sh -l
 
-echo "OUTPUT_DIR: $OUTPUT_DIR"
+set -e
+
+echo "=== TeX to PDF Converter ==="
 echo "MAIN_LATEX_FILE: $MAIN_LATEX_FILE"
+echo "OUTPUT_DIR: $OUTPUT_DIR"
 echo "CTAN_PACKAGES: $CTAN_PACKAGES"
 echo "TOC: $TOC"
 
-tlmgr install xetex
-
-if [ -z "$CTAN_PACKAGES" ] ; then
-	echo No package to install;
-else
-	tlmgr install $CTAN_PACKAGES;
+# Install additional packages if specified
+if [ -n "$CTAN_PACKAGES" ]; then
+    echo "Installing additional packages: $CTAN_PACKAGES..."
+    tlmgr install $CTAN_PACKAGES
 fi
 
-mkdir -p $OUTPUT_DIR
+mkdir -p "$OUTPUT_DIR"
 
-if [ "$TOC" = true ] ; then
-	lualatex $MAIN_LATEX_FILE
+# Run initial pass for TOC if requested
+if [ "$TOC" = "true" ]; then
+    echo "Generating Table of Contents (Pass 1)..."
+    lualatex "$MAIN_LATEX_FILE"
 fi
 
-lualatex -output-directory $OUTPUT_DIR $MAIN_LATEX_FILE
+echo "Generating PDF..."
+lualatex -interaction=nonstopmode -output-directory "$OUTPUT_DIR" "$MAIN_LATEX_FILE"
 
-time=$(date)
-echo "{name}={value}" >> $GITHUB_OUTPUT
+echo "conversion_time=$(date)" >> "$GITHUB_OUTPUT"
+echo "Success!"

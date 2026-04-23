@@ -1,19 +1,26 @@
-FROM ubuntu:22.04
+FROM debian:bookworm-slim
 
-WORKDIR /var/local
-
-# combine into one run command to reduce image size
-RUN apt update && apt install -y perl curl wget libfontconfig1 fonts-font-awesome && curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh && apt clean
+# Prevent interactive prompts during installation
+ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="${PATH}:/root/bin"
 
-RUN tlmgr update --self --all
-RUN tlmgr path add
+# Combine setup steps to reduce layers and image size
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends perl curl ca-certificates libfontconfig1 fonts-font-awesome xz-utils gnupg
+RUN curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh
+# Set a reliable mirror and update
+RUN /root/.TinyTeX/bin/*/tlmgr option repository http://mirror.ctan.org/systems/texlive/tlnet
+RUN /root/.TinyTeX/bin/*/tlmgr update --self --all
+RUN /root/.TinyTeX/bin/*/tlmgr install xetex luatex
+RUN /root/.TinyTeX/bin/*/tlmgr path add
 RUN fmtutil-sys --all
+RUN apt-get purge -y curl
+RUN apt-get autoremove -y
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/*
 
-WORKDIR /
-
-COPY . /
-
-RUN chmod +x entrypoint.sh
+# Copy only necessary files
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
