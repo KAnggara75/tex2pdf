@@ -14,44 +14,49 @@ if ! command -v tlmgr >/dev/null 2>&1; then
     exit 1
 fi
 
-OUTPUT_DIR="$(cd "$OUTPUT_DIR" && pwd)"
-mkdir -p "$OUTPUT_DIR"
+OUTPUT_DIR_ABS="$(cd "$OUTPUT_DIR" && pwd)"
+mkdir -p "$OUTPUT_DIR_ABS"
+
+SAFE_PACKAGES="
+fontawesome5
+blindtext
+lua-uni-algos
+multicol
+"
 
 if [ -n "$CTAN_PACKAGES" ]; then
     echo "Installing CTAN packages..."
     for pkg in $CTAN_PACKAGES; do
+        echo "$SAFE_PACKAGES" | grep -w "$pkg" >/dev/null 2>&1 || {
+            echo "Skipping unsafe package: $pkg"
+            continue
+        }
+
         echo "Installing $pkg..."
-        tlmgr install "$pkg" || echo "Skipping $pkg"
+        tlmgr install "$pkg" || echo "Failed $pkg"
     done
 fi
 
 compile() {
-    lualatex -interaction=nonstopmode \
-        -output-directory "$OUTPUT_DIR" \
-        "$1" || {
+    lualatex -interaction=nonstopmode -halt-on-error \
+        -output-directory "$OUTPUT_DIR_ABS" \
+        "$1" 2>&1 | tee "$OUTPUT_DIR_ABS/build.log" || {
         echo "ERROR: LaTeX compilation failed"
         exit 1
     }
 }
-
-echo "Generating PDF..."
 
 FILE_DIR=$(dirname "$MAIN_LATEX_FILE")
 FILE_NAME=$(basename "$MAIN_LATEX_FILE")
 
 cd "$FILE_DIR"
 
-if [ "$TOC" = "true" ]; then
-    for i in 1 2 3; do
-        echo "Pass $i (TOC mode)..."
-        compile "$FILE_NAME"
-    done
-else
-    for i in 1 2 3; do
-        echo "Pass $i..."
-        compile "$FILE_NAME"
-    done
-fi
+echo "Generating PDF..."
+
+for i in 1 2 3; do
+    echo "Pass $i..."
+    compile "$FILE_NAME"
+done
 
 if [ -n "$GITHUB_OUTPUT" ]; then
     echo "conversion_time=$(date)" >> "$GITHUB_OUTPUT"
