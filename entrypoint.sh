@@ -22,6 +22,14 @@ fontawesome5
 blindtext
 lua-uni-algos
 multicol
+fontenc
+parskip
+geometry
+xcolor
+xstring
+fancyhdr
+ragged2e
+hyperref
 "
 
 if [ -n "$CTAN_PACKAGES" ]; then
