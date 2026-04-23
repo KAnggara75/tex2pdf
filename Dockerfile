@@ -17,10 +17,7 @@ RUN /root/.TinyTeX/bin/x86_64-linux/tlmgr option repository https://mirror.ctan.
     && /root/.TinyTeX/bin/x86_64-linux/tlmgr install \
         fontawesome5 \
         blindtext \
-        lua-uni-algos \
-        xstring \
-        fancyhdr \
-				ragged2e
+        lua-uni-algos
 
 # copy system files
 COPY entrypoint.sh /entrypoint.sh

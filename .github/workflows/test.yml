@@ -20,7 +20,7 @@ jobs:
         with:
           output_dir: output
           main_latex_file: test/test.tex
-          ctan_packages: amsmath amsfonts lua-uni-algos
+          ctan_packages: amsmath amsfonts lua-uni-algos ragged2e fancyhdr xstring 
       - name: Upload PDF to the workflow tab
         id: upload-math-docs
         uses: actions/upload-artifact@v7.0.1
