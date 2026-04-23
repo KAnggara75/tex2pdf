@@ -19,7 +19,8 @@ RUN /root/.TinyTeX/bin/x86_64-linux/tlmgr option repository https://mirror.ctan.
         blindtext \
         lua-uni-algos \
         xstring \
-        fancyhdr
+        fancyhdr \
+				ragged2e
 
 # copy system files
 COPY entrypoint.sh /entrypoint.sh
