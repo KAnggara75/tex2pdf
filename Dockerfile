@@ -1,23 +1,21 @@
 FROM debian:bookworm-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV PATH="/root/.TinyTeX/bin/x86_64-linux:$PATH"
+ENV PATH="/root/.TinyTeX/bin/x86_64-linux:/root/.TinyTeX/bin/aarch64-linux:${PATH}"
 
-# system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     perl curl ca-certificates libfontconfig1 fonts-font-awesome xz-utils gnupg \
     && rm -rf /var/lib/apt/lists/*
 
-# install TinyTeX
 RUN curl -sL https://yihui.org/tinytex/install-bin-unix.sh | sh
 
-# set CTAN repo + install all required packages
-RUN /root/.TinyTeX/bin/x86_64-linux/tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet \
-    && /root/.TinyTeX/bin/x86_64-linux/tlmgr install \
-        amsmath amsfonts fontawesome5 blindtext lua-uni-algos \
-        xstring fancyhdr ragged2e fontenc geometry hyperref xcolor multicol parskip
+# DEBUG (hapus kalau sudah stabil)
+RUN ls -R /root/.TinyTeX/bin || true
 
-# copy system files
+# install packages WITHOUT hardcoded path
+RUN tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet \
+    && tlmgr install parskip geometry xcolor xstring fancyhdr ragged2e hyperref fontawesome5 blindtext
+
 COPY entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
