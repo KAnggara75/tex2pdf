@@ -1,0 +1,15 @@
+# CORE (already in TeX Live, NOT installed via tlmgr)
+fontenc
+geometry
+hyperref
+xcolor
+xstring
+fancyhdr
+ragged2e
+multicol
+parskip
+
+# ADDONS (installed in Docker image)
+fontawesome5
+blindtext
+lua-uni-algos

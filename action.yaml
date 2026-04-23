@@ -20,8 +20,8 @@ inputs:
       "If there's is a Table Of Content in your LaTeX document put this flag to true. It will compile the doc twice to generate the TOC."
     default: false
 runs:
-  using: 'docker'
-  image: 'docker://ghcr.io/kanggara75/tex2pdf:latest'
+  using: docker
+  image: docker://ghcr.io/kanggara75/tex2pdf:latest
   env:
     OUTPUT_DIR: ${{ inputs.output_dir }}
     MAIN_LATEX_FILE: ${{ inputs.main_latex_file }}
