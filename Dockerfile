@@ -19,9 +19,9 @@ RUN /root/.TinyTeX/bin/x86_64-linux/tlmgr option repository https://mirror.ctan.
 
 # copy system files
 COPY entrypoint.sh /entrypoint.sh
-COPY validate-deps.sh /validate-deps.sh
+COPY validate.sh /validate.sh
 COPY latex.lock /latex.lock
 
-RUN chmod +x /entrypoint.sh /validate-deps.sh
+RUN chmod +x /entrypoint.sh /validate.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
