@@ -11,8 +11,12 @@ TOC="${TOC:-false}"
 
 mkdir -p "$OUTPUT_DIR"
 
-# STEP 1: VALIDATION
-sh /validate.sh
+if [ -n "$CTAN_PACKAGES" ]; then
+    echo "Installing CTAN packages: $CTAN_PACKAGES"
+    for pkg in $CTAN_PACKAGES; do
+        tlmgr install "$pkg"
+    done
+fi
 
 compile() {
     lualatex -interaction=nonstopmode \

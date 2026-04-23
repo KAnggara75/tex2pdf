@@ -11,16 +11,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # install TinyTeX
 RUN curl -sL https://yihui.org/tinytex/install-bin-unix.sh | sh
 
-# set CTAN repo + install ONLY required addons
+# set CTAN repo + install all required packages
 RUN /root/.TinyTeX/bin/x86_64-linux/tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet \
     && /root/.TinyTeX/bin/x86_64-linux/tlmgr install \
-        fontawesome5 blindtext lua-uni-algos xstring fancyhdr
+        amsmath amsfonts fontawesome5 blindtext lua-uni-algos \
+        xstring fancyhdr ragged2e fontenc geometry hyperref xcolor multicol parskip
 
 # copy system files
 COPY entrypoint.sh /entrypoint.sh
-COPY validate.sh /validate.sh
-COPY latex.lock /latex.lock
 
-RUN chmod +x /entrypoint.sh /validate.sh
+RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
