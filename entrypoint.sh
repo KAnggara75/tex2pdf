@@ -11,15 +11,7 @@ TOC="${TOC:-false}"
 
 mkdir -p "$OUTPUT_DIR"
 
-# STEP 1: INSTALL CTAN PACKAGES
-if [ -n "$CTAN_PACKAGES" ]; then
-    echo "Installing CTAN packages: $CTAN_PACKAGES"
-    for pkg in $CTAN_PACKAGES; do
-        tlmgr install "$pkg"
-    done
-fi
-
-# STEP 2: VALIDATION
+# STEP 1: VALIDATION
 sh /validate.sh
 
 compile() {
