@@ -2,7 +2,8 @@ FROM debian:bookworm-slim
 
 # Prevent interactive prompts during installation
 ENV DEBIAN_FRONTEND=noninteractive
-ENV PATH="${PATH}:/root/bin"
+# Add TinyTeX to PATH
+ENV PATH="/root/.TinyTeX/bin/x86_64-linux:/root/.TinyTeX/bin/aarch64-linux:${PATH}"
 
 # Combine setup steps to reduce layers and image size
 RUN apt-get update
@@ -14,8 +15,6 @@ RUN /root/.TinyTeX/bin/*/tlmgr update --self --all
 RUN /root/.TinyTeX/bin/*/tlmgr install xetex luatex
 RUN /root/.TinyTeX/bin/*/tlmgr path add
 RUN fmtutil-sys --all
-RUN apt-get purge -y curl
-RUN apt-get autoremove -y
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/*
 

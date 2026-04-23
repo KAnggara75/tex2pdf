@@ -1,4 +1,6 @@
-#!/bin/sh -l
+#!/bin/sh
+# Ensure TinyTeX binaries are in PATH
+export PATH="$PATH:$(find /root/.TinyTeX/bin -maxdepth 1 -type d -not -path /root/.TinyTeX/bin | head -n 1)"
 
 set -e
 
@@ -19,7 +21,7 @@ mkdir -p "$OUTPUT_DIR"
 # Run initial pass for TOC if requested
 if [ "$TOC" = "true" ]; then
     echo "Generating Table of Contents (Pass 1)..."
-    lualatex "$MAIN_LATEX_FILE"
+    lualatex -interaction=nonstopmode -output-directory "$OUTPUT_DIR" "$MAIN_LATEX_FILE"
 fi
 
 echo "Generating PDF..."
